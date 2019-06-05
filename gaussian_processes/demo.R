@@ -4,13 +4,16 @@
 ### 2001 written by Ralf Herbrich
 ### Microsoft Research Cambridge
 ###
+### 2019 modified by Ralf Herbrich
+### Amazon Development Center Germany
+###
 ### (c) 2001 Microsoft Corporation. Reproduced with permission. All rights reserved.
 
 ############################################################
 ## load the plotting routines from rbf_demo
 ############################################################
 
-source ("rbf_demo.R")
+source ("gaussian_processes/rbf_demo.R")
 
 ############################################################
 ## this routine computes the prediction + variance of a
@@ -196,10 +199,10 @@ evidence <- function (n=10,                 ## number of training points
   ## plot the evidence
   if (!is.null (file)) {
     postscript (file=file [1]);
-    par (mai=c (1.0,1.25,0.25,0.25));
-  } else {
-    x11 ();
-  }
+    
+  } 
+  par (mai=c (1.0,1.25,0.25,0.25));
+
   image (var.list, sigma.list, log (evidence+1e-4),
          col=gray (exp (seq (0,1,length=200))/exp(1)),
          xlab="variance", ylab="bandwidth",
@@ -220,10 +223,8 @@ evidence <- function (n=10,                 ## number of training points
   for (i in 1:length (var.plot)) {
     if (!is.null (file)) {
       postscript (file=file [1+i]);
-      par (mai=c (1.0,1.25,0.25,0.25));
-    } else {
-      x11 ();
     }
+    par (mai=c (1.0,1.25,0.25,0.25));
     plot.GP (X, y, var=var.plot [i], sigma=sigma.plot [i]);
     readline ("Data fit plot");
     dev.off ();
@@ -272,89 +273,119 @@ GP.sample <- function (N=20, sigma1=1, sigma2=1) {
 ## BOOK plots
 ############################################################
 
-book <- function () {
+book <- function (output='SCREEN') {
   ############################################################
   ## generate the index plots 
-  if (!file.exists ("../../ps/GP_evidence.ps")) {
+  if (output=='PS') {
     evidence (var=c (0, 0.6), sigma=c (0.1, 3.5), var.plot=c (0, 0.5),
               sigma.plot=c(1.1, 3),
-              file=c("../../ps/GP_evidence.ps",
-                "../../ps/GP_nonoise_model.ps",
-                "../../ps/GP_fullnoise_model.ps"), N=50);
+              file=c("GP_evidence.ps",
+                     "GP_nonoise_model.ps",
+                     "GP_fullnoise_model.ps"), N=50);
+  } else {
+    evidence (var=c (0, 0.6), sigma=c (0.1, 3.5), var.plot=c (0, 0.5),
+              sigma.plot=c(1.1, 3), N=50);
   }
 
   ############################################################
   ## plot samples from the ARD prior 
-  if (!file.exists ("../../ps/ARD_sample1.ps")) {
-    set.seed (0);
-    postscript (file="../../ps/ARD_sample1.ps");
-    persp (GP.sample (N=40, sigma1=5, sigma2=5),
-           theta=35, phi=30, shade=0.7, border=gray (0.25),
-           ticktype="detailed", xlab="input dimension 1", ylab="input dimension 2",
-           zlab="function values", cex=1.3,
-           lphi=30, ltheta=-85);
-    cat ("[ARD_sample1.ps plotted]\n");
-    dev.off ();
-    postscript (file="../../ps/ARD_sample2.ps");
-    persp (GP.sample (N=40, sigma1=5, sigma2=100),
-           theta=35, phi=30, shade=0.7, border=gray (0.25),
-           ticktype="detailed", xlab="input dimension 1", ylab="input dimension 2",
-           zlab="function values", cex=1.3,
-           lphi=30, ltheta=-85);
-    cat ("[ARD_sample2.ps plotted]\n");
-    dev.off ();
+  if (output == 'PS') {
+    postscript (file="ARD_sample1.ps");
   }
+  set.seed (0);
+  persp (GP.sample (N=40, sigma1=5, sigma2=5),
+         theta=35, phi=30, shade=0.7, border=gray (0.25),
+         ticktype="detailed", xlab="input dimension 1", ylab="input dimension 2",
+         zlab="function values", cex=1.3,
+         lphi=30, ltheta=-85);
+  if (output == 'PS') {
+    cat ("[ARD_sample1.ps plotted]\n");
+  } else {
+    readline("Press any key to continue");
+  }
+  dev.off ();
   
+  if (output == 'PS') {
+    postscript (file="ARD_sample2.ps");
+  }
+  persp (GP.sample (N=40, sigma1=5, sigma2=100),
+         theta=35, phi=30, shade=0.7, border=gray (0.25),
+         ticktype="detailed", xlab="input dimension 1", ylab="input dimension 2",
+         zlab="function values", cex=1.3,
+         lphi=30, ltheta=-85);
+  if (output == 'PS') {
+    cat ("[ARD_sample2.ps plotted]\n");
+  } else {
+    readline("Press any key to continue");
+  }
+  dev.off ();
+
   ############################################################
   ## plot the effect of a latent variable
-  if (!file.exists ("../../ps/input_signal.ps")) {
-
-    ## plot the input signal
-    postscript (file="../../ps/input_signal.ps", horizontal=FALSE);
-    par (mai=c (1.0,1.25,0.25,0.25));
-    load ("train.dat");
-    x.min <- min (X [,1]);
-    x.max <- max (X [,1]);
-    x <- cbind (seq (x.min - (x.max - x.min) * 0.3,
-                     x.max + (x.max - x.min) * 0.3, length=100));
-    out <- GP.predict (X, y, x, var=0)$y;
-    plot (x, out, type="l", lwd=3, xlab="x", ylab="t(x)",
-          cex.lab=4.0, cex.axis=2.5);
-    readline ("[../../ps/input_signal.ps plotted]\n");
-    dev.off ();
-
-    ## plot different sigmoid's
-    postscript (file="../../ps/sigmoid.ps", horizontal=FALSE);
-    par (mai=c (1.0,1.25,0.25,0.25));
-    beta.list <- c (0.1, 1, 5);
-    z <- seq (-max (abs (y)), max (abs (y)), length=100);
-    plot (range (z), c (0, 1), type="n", xlab="t", ylab=expression (pi(t)),
-          cex.lab=4, cex.axis=2.5);
-    for (i in 1:length (beta.list)) {
-      lines (z, exp (2/beta.list [i] * z) / (1 + exp (2/beta.list [i] * z)),
-             lty=i, lwd=3);
-    }
-    legend (x [1], 1.0, c (expression (paste (beta, "=0.1")),
-                           expression (paste (beta, "=1.0")),
-                           expression (paste (beta, "=5.0"))),
-            lty=1:3, lwd=3, cex=3);
-    readline ("[../../ps/sigmoid.ps plotted]\n");
-    dev.off ();
-
-    ## plot the transfered latent functions
-    postscript (file="../../ps/transfered_input_signal.ps", horizontal=FALSE);
-    par (mai=c (1.0,1.25,0.25,0.25));
-    plot (range (x), c (0, 1), type="n", xlab="x",
-          ylab=expression (paste (bold(P)[paste (Y, group ("|", paste ("X=x"), ""))],"(+1)")),
-          cex.lab=4, cex.axis=2.5);
-    for (i in 1:length (beta.list)) {
-      out <- GP.predict (X, y, cbind (x), sigma=0.5, var=0)$y;
-      lines (x,
-             exp (2/beta.list [i] * out) / (1 + exp (2/beta.list [i] * out)),
-             lty=i, lwd=3);
-    }
-    readline ("[../../ps/transfered_input_signal.ps plotted]\n");
-    dev.off ();
+  if (output == 'PS') {
+    postscript (file="input_signal.ps", horizontal=FALSE);
   }
+  par (mai=c (1.0,1.25,0.25,0.25));
+  load ("train.dat");
+  x.min <- min (X [,1]);
+  x.max <- max (X [,1]);
+  x <- cbind (seq (x.min - (x.max - x.min) * 0.3,
+                   x.max + (x.max - x.min) * 0.3, length=100));
+  out <- GP.predict (X, y, x, var=0)$y;
+  plot (x, out, type="l", lwd=3, xlab="x", ylab="t(x)",
+        cex.lab=4.0, cex.axis=2.5);
+  if (output == 'PS') {
+    cat ("[input_signal.ps plotted]\n");
+  } else {
+    readline("Press any key to continue");
+  }
+  dev.off ();
+
+  ## plot different sigmoid's
+  if (output == 'PS') {
+    postscript (file="sigmoid.ps", horizontal=FALSE);
+  }
+  par (mai=c (1.0,1.25,0.25,0.25));
+  beta.list <- c (0.1, 1, 5);
+  z <- seq (-max (abs (y)), max (abs (y)), length=100);
+  plot (range (z), c (0, 1), type="n", xlab="t", ylab=expression (pi(t)),
+        cex.lab=4, cex.axis=2.5);
+  for (i in 1:length (beta.list)) {
+    lines (z, exp (2/beta.list [i] * z) / (1 + exp (2/beta.list [i] * z)),
+           lty=i, lwd=3);
+  }
+  legend (x [1], 1.0, c (expression (paste (beta, "=0.1")),
+                         expression (paste (beta, "=1.0")),
+                         expression (paste (beta, "=5.0"))),
+          lty=1:3, lwd=3, cex=3);
+  if (output == 'PS') {
+    cat ("[sigmoid.ps plotted]\n");
+  } else {
+    readline("Press any key to continue");
+  }
+  dev.off ();
+  
+  ## plot the transfered latent functions
+  if (output == 'PS') {
+    postscript (file="transfered_input_signal.ps", horizontal=FALSE);
+  }
+  par (mai=c (1.0,1.25,0.25,0.25));
+  plot (range (x), c (0, 1), type="n", xlab="x",
+        ylab=expression (paste (bold(P)[paste (Y, group ("|", paste ("X=x"), ""))],"(+1)")),
+        cex.lab=4, cex.axis=2.5);
+  for (i in 1:length (beta.list)) {
+    out <- GP.predict (X, y, cbind (x), sigma=0.5, var=0)$y;
+    lines (x,
+           exp (2/beta.list [i] * out) / (1 + exp (2/beta.list [i] * out)),
+           lty=i, lwd=3);
+  }
+  if (output == 'PS') {
+    cat ("[transfered_input_signal.ps plotted]\n");
+  } else {
+    readline("Press any key to continue");
+  }
+  dev.off ();
 }
+
+book()
 

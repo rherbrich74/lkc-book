@@ -348,10 +348,10 @@ exmp <- function (M=5, m=50, sigma=3, type="rbf", surface=TRUE,
   readline ("Press any key to continue");
   G <- normalise (kernel.linear (D$X, t(D$X), type=type, sigma=sigma));
   plot (G, surface=surface, matlab=matlab, file=file);
+  readline ("Press any key to continue");
 }
 
-
-
+exmp()
 
 
 

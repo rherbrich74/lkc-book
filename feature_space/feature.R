@@ -4,9 +4,12 @@
 ### 2000 written by Ralf Herbrich
 ### Microsoft Research Cambridge
 ###
+### 2019 modified by Ralf Herbrich
+### Amazon Development Center Germany
+###
 ### (c) 2001 Microsoft Corporation. Reproduced with permission. All rights reserved.
 
-book <- function () {
+book <- function (output='SCREEN') {
 
   ## this code creates the plot of the embedding of
   ## the unite square in R^2 
@@ -25,7 +28,9 @@ book <- function () {
     }
   }
 
-  postscript (file="../../ps/feature.ps", horizontal=FALSE);
+  if (output == 'PS') {
+    postscript (file="feature.ps", horizontal=FALSE);
+  }
   par (mai=c (0,0.1,0,0));
   palette (gray (0:256/256));
   persp (X1, X2, X3,
@@ -61,7 +66,9 @@ book <- function () {
   x2 <- c (as.vector (X2.plus), as.vector (X2.minus));
   yr <- range (x2 [!is.nan (x2)]);
  
-  postscript (file="../../ps/decision_surfaces.ps", horizontal=FALSE);
+  if (output == 'PS') {
+    postscript (file="decision_surfaces.ps", horizontal=FALSE);
+  }
   par (mai=c (0.85,1.0,0.1,0.1));
   plot (xr, yr, type="n", xlab=expression (x[1]), ylab=expression (x[2]),
         cex.lab=3, cex.axis=2);
@@ -77,5 +84,3 @@ book <- function () {
 }
 
 book ();
-
-
