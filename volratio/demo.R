@@ -10,9 +10,9 @@
 if (!is.loaded ("volratio")) {
   cat ("Loading dynamic library for volume ratio computation\n")
   if (R.version$os == "Win32") {
-    dyn.load("volratio.dll");
+    dyn.load("volration/volratio.dll");
   } else {
-    dyn.load("volratio.so");    
+    dyn.load("volratio/volratio.so");    
   }
 }
 
@@ -47,24 +47,22 @@ make.plots <- function (dim = c(3, 5, 7)) {
 ## book plots
 ############################################################
 
-book <- function () {
+book <- function (output='SCREEN') {
 
-  if (!file.exists ("../../ps/tight_d=10.ps")) {
-    postscript (file="../../ps/tight_d=10.ps");
-    par (mai=c (1.0,1.25,0.25,0.25));
-    make.plots (dim=10);
+  if (output == 'PS') {
+    postscript (file="tight_d=10.ps");
   }
+  par (mai=c (1.0,1.25,0.25,0.25));
+  make.plots (dim=10);
 
-  if (!file.exists ("../../ps/tight_d=100.ps")) {
-    postscript (file="../../ps/tight_d=100.ps");
-    par (mai=c (1.0,1.25,0.25,0.25));
-    make.plots (dim=100);
+  if (output == 'PS') {
+    postscript (file="tight_d=100.ps");
   }
+  par (mai=c (1.0,1.25,0.25,0.25));
+  make.plots (dim=100);
 }
 
-
-
-
+book()
 
 
 

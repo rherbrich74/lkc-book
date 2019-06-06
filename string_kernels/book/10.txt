@@ -1,0 +1,3 @@
+It is already known, however, that the empirical risk of a fixed
+function converges towards with an exponential rate w.r.t. for any
+probability measure (see, e.g.  or Subsection ).

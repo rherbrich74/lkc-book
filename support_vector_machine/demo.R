@@ -106,7 +106,7 @@ draw.plane <- function (X.plus, X.minus, w) {
 ## BOOK plots
 ############################################################
 
-book <- function () {
+book <- function (output='SCREEN') {
 
   ## fix the random number generator to reproduce "random" numbers
   set.seed (4);
@@ -136,32 +136,42 @@ book <- function () {
   
   ############################################################
   ## generate hyperplane plots
-  if (!file.exists ("../../ps/svm_hyperplane1.ps")) {
-    postscript ("../../ps/svm_hyperplane1.ps", horizontal=FALSE);
-     
-    ## compute and draw discriminant no 1
-    w <- Sigma.inv %*% (mu.plus - mu.minus);
-    w <- 1 / as.vector (sqrt (t (w) %*% w)) * w;
-
-    draw.plane (X.plus, X.minus, w);
-    
-    dev.off ();
+  if (output == 'PS') {
+    postscript ("svm_hyperplane1.ps", horizontal=FALSE);
   }
+   
+  ## compute and draw discriminant no 1
+  w <- Sigma.inv %*% (mu.plus - mu.minus);
+  w <- 1 / as.vector (sqrt (t (w) %*% w)) * w;
 
-  if (!file.exists ("../../ps/svm_hyperplane2.ps")) {
-    postscript ("../../ps/svm_hyperplane2.ps", horizontal=FALSE);
-     
-    ## compute and draw discriminant no 2
-    w <- cbind (c (cos (alpha), -sin (alpha)),
-                c (sin (alpha), cos (alpha))) %*% w;
+  draw.plane (X.plus, X.minus, w);
 
-    draw.plane (X.plus, X.minus, w);
-    
-    dev.off ();
+  if (output == 'PS') {
+    cat ("svm_hyperplane1.ps created\n");
+  } else {
+    readline ("Press any key to continue");
   }
+  dev.off ();
 
+  if (output == 'PS') {
+    postscript ("svm_hyperplane2.ps", horizontal=FALSE);
+  }
+     
+  ## compute and draw discriminant no 2
+  w <- cbind (c (cos (alpha), -sin (alpha)),
+              c (sin (alpha), cos (alpha))) %*% w;
+
+  draw.plane (X.plus, X.minus, w);
+    
+  if (output == 'PS') {
+    cat ("svm_hyperplane2.ps created\n");
+  } else {
+    readline ("Press any key to continue");
+  }
+  dev.off ();
 }
 
+book()
 
 
 

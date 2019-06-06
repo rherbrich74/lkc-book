@@ -1,0 +1,3 @@
+Nonetheless, it is not yet clear if this holds true if we consider the
+empirical risk minimizer given by equation () because this function
+changes over the random choice of training samples.

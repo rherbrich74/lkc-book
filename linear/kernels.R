@@ -7,14 +7,17 @@
 ### 2001 completed by Ralf Herbrich
 ### Microsoft Research Cambridge
 ###
+### 2019 modified by Ralf Herbrich
+### Amazon Development Center Germany
+###
 ### (c) 2001 Microsoft Corporation. Reproduced with permission. All rights reserved.
 
 if (!is.loaded ("kinner")) {
   cat ("Loading dynamic library for Kernel computations\n")
   if (R.version$os == "Win32") {
-    dyn.load ("kernels.dll");
+    dyn.load ("linear/kernels.dll");
   } else {
-    dyn.load ("kernels.so");
+    dyn.load ("linear/kernels.so");
   }
 }
 

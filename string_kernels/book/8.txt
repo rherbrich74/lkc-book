@@ -1,0 +1,2 @@
+By construction, can be minimized solely on the basis of the training
+sample.

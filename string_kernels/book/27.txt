@@ -1,0 +1,4 @@
+By the above reasoning we see that the Gram matrix () and the
+--dimensional vector of kernel evaluations between the training inputs
+and a new test point suffice for learning and classification,
+respectively.

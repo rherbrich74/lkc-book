@@ -1,0 +1,3 @@
+In order to be a consistent learning principle, we want the expected
+risk to converge to the minimal expected risk, where the randomness is
+due to the random choice of the training sample.

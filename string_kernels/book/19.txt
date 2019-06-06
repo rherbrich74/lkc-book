@@ -1,0 +1,2 @@
+The regularizer can be thought of as a penalization term referring to
+the complexity of particular classifiers.

@@ -1,0 +1,2 @@
+Before we rephrase the original theorem we give a more intuitive
+characterization of Mercer kernels.

@@ -1,0 +1,3 @@
+The biggest difficulty so far is that we have no knowledge of the
+function to be optimized, i.e. we are only given an iid sample instead
+of the full measure.

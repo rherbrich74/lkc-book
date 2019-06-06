@@ -1,0 +1,2 @@
+Given a kernel and a set of points in we call the matrix with the Gram
+matrix of at.

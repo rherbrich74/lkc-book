@@ -1,0 +1,2 @@
+Using the notion of a kernel we can therefore formulate the kernel
+perceptron or dual perceptron algorithm presented at page.

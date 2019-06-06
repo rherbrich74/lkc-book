@@ -1,0 +1,3 @@
+The key idea of the kernel technique is to invert the chain of
+arguments, i.e. choosing a kernel rather than a mapping before
+applying a learning algorithm.

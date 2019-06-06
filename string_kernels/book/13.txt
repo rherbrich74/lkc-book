@@ -1,0 +1,2 @@
+The idea of regularization is to restrict the space of solutions to
+compact subsets of the (originally too large) space.

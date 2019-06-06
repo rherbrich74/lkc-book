@@ -5,6 +5,9 @@
 ### 2001 written by Ralf Herbrich
 ### Microsoft Research Cambridge
 ###
+### 2019 modified by Ralf Herbrich
+### Amazon Development Center Germany
+###
 ### (c) 2001 Microsoft Corporation. Reproduced with permission. All rights reserved.
 
 
@@ -12,9 +15,10 @@
 ## BOOK plots
 ############################################################
 
-book <- function () {
-
-  postscript (file="../../ps/srm.ps");
+book <- function (output='SCREEN') {
+  if (output == 'PS') {
+    postscript (file="srm.ps");
+  }
   par (mai=c (0.75,1.0,0.25,0.25));
 
   ## global parameters  
@@ -66,5 +70,3 @@ book <- function () {
 }
 
 book ();
-
-

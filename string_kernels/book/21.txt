@@ -1,0 +1,2 @@
+In Figure (left) the mapping is applied to the unit square and the
+resulting manifold in is shown.

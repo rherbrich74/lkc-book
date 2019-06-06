@@ -1,0 +1,5 @@
+Nevertheless, for any learning method we shall require it to improve
+with increasing training sample size, i.e. the probability of drawing
+a training sample such that the expected risk of the learned function
+deviates largely from the minimal expected risk will decrease with
+increasing.

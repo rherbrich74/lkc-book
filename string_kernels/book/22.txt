@@ -1,0 +1,2 @@
+As we assumed to be given we will call this the explicit way to
+non-linearize a linear classification model.

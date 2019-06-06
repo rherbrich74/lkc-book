@@ -1,0 +1,2 @@
+Clearly, controls the amount of regularization: setting is equivalent
+to minimizing only the empirical risk.

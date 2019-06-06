@@ -1,0 +1,2 @@
+This can be achieved by the requirement, that for each positive
+number, the set is compact.

@@ -1,0 +1,2 @@
+Here, the idea is to replace by (see equation ()), which contains all
+knowledge that can be drawn from the training sample.

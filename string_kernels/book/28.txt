@@ -1,0 +1,2 @@
+It is worthwhile mentioning that the Gram matrix and feature space are
+also called kernel matrix and kernel space, respectively.

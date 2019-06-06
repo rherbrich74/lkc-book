@@ -1,0 +1,2 @@
+The necessary and sufficient conditions of to be a kernel are given by
+Mercer's theorem .

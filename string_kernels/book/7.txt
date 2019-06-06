@@ -1,0 +1,2 @@
+Given a training sample the functional is called the empirical risk
+functional over.

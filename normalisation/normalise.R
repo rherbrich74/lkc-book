@@ -4,10 +4,12 @@
 ### 2000 written by Ralf Herbrich
 ### Microsoft Research Cambridge
 ###
+### 2019 modified by Ralf Herbrich
+### Amazon Development Center Germany
+###
 ### (c) 2001 Microsoft Corporation. Reproduced with permission. All rights reserved.
 
-
-source ("linear.R")
+source ("linear/linear.R")
 
 ############################################################
 ### makes all the experiments for one dataset
@@ -18,7 +20,7 @@ do.dataset <- function (base, kernel, degree.list, tol=1e-3) {
   cat ("Processing ", base, "\n======================\n\n");
 
   ## construct the file name of the total results file
-  curves <- paste (base, '/', base, "_degree.results", sep="");
+  curves <- paste ('normalisation/', base, '/', base, "_degree.results", sep="");
   unlink (curves);
 
   ##------------------------------------------------------------
@@ -36,7 +38,7 @@ do.dataset <- function (base, kernel, degree.list, tol=1e-3) {
     kernel <- kernel.new ("poly", degree=degree);
 
     ## construct the local result filename
-    log <- paste (base, '/', base, "_degree=",
+    log <- paste ('normalisation/', base, '/', base, "_degree=",
                   formatC (degree, format="f"),
                   ".error", sep="");
 
@@ -59,8 +61,8 @@ do.dataset <- function (base, kernel, degree.list, tol=1e-3) {
       ## main loop over different data files
       ##------------------------------------------------------------
       while (TRUE) {
-        train.fl <- paste (base, '/', base, "_", fcnt, ".tr", sep="");
-        test.fl <- paste (base, '/', base, "_", fcnt, ".ts", sep="");
+        train.fl <- paste ('normalisation/', base, '/', base, "_", fcnt, ".tr", sep="");
+        test.fl <- paste ('normalisation/', base, '/', base, "_", fcnt, ".ts", sep="");
         
         ## halt, if no more data files available
         if (!file.exists (train.fl) || !file.exists (test.fl)) {
@@ -103,7 +105,7 @@ do.dataset <- function (base, kernel, degree.list, tol=1e-3) {
     }
     
     ## produce the result file
-    result <- paste (base, '/', base, "_degree=",
+    result <- paste ('normalisation/', base, '/', base, "_degree=",
                      formatC (degree, format="f"), ".results",
                      sep=""); 
     cat (base, "\n", "------------\n\n", file=result, sep="");
@@ -141,11 +143,10 @@ do.plots <- function (base, ex=1.8) {
   ## log information
   cat ("Processing ", base, "\n======================\n\n");
 
-  res.fl <- paste (base, "/", base, "_degree.results", sep="");
+  res.fl <- paste ('normalisation/', base, "/", base, "_degree.results", sep="");
   if (!file.exists (res.fl)) {
     break;
   } else {
-    x11 ();
     par (mfrow = c (1, 1), fig=c(0.02,1,0,1));
     
     ## read data file
@@ -172,9 +173,7 @@ do.plots <- function (base, ex=1.8) {
                     lwd=2, lty=2,
                     blwd=1, ticch=2, blty=1, add=TRUE);
     
-    ps <- readline ("Type in name of postscript: ");
-    dev.print (file=ps);
-    
+    readline ("Press any key to continue");
     dev.off ();
   }
   return;
@@ -189,12 +188,5 @@ do.plots ("thyroid");
 
 do.dataset ("sonar",  degree.list=c (2, 4, 6, 8, 10, 12, 14, 16, 18, 20), tol=1e-2);
 do.plots ("sonar");
-
-
-
-
-
-
-
 
 

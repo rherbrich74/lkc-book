@@ -6,39 +6,41 @@
 ### 2001 completed by Ralf Herbrich
 ### Microsoft Research Cambridge
 ###   
+### 2019 modified by Ralf Herbrich
+### Amazon Development Center Germany
+###
 ### (c) 2001 Microsoft Corporation. Reproduced with permission. All rights reserved.
-
 
 ############################################################
 ##     L O A D   E X T E R N A L   L I B R A R I E S
 ############################################################
 
-source ("kernels.R");
+source ("linear/kernels.R");
 
 if (!is.loaded ("pr_loqo")) {
   cat ("Loading dynamic library for LOQO optimizer\n")
   if (R.version$os == "Win32") {
-    dyn.load ("pr_loqo.dll");
+    dyn.load ("linear/pr_loqo.dll");
   } else {
-    dyn.load ("pr_loqo.so");
+    dyn.load ("linear/pr_loqo.so");
   }
 }
 
 if (!is.loaded ("kbilliard")) {
   cat ("Loading dynamic library for Bayes Point Machines\n")
   if (R.version$os == "Win32") {
-    dyn.load ("bayes.dll");
+    dyn.load ("linear/bayes.dll");
   } else {
-    dyn.load ("bayes.so");
+    dyn.load ("linear/bayes.so");
   }
 }
 
 if (!is.loaded ("kperc")) {
   cat ("Loading dynamic library for Kernel Perceptrons\n")
   if (R.version$os == "Win32") {
-    dyn.load ("kperc.dll");
+    dyn.load ("linear/kperc.dll");
   } else {
-    dyn.load ("kperc.so");
+    dyn.load ("linear/kperc.so");
   }
 }
 
@@ -573,7 +575,7 @@ perc.GP.class <- function (p,            # old linear classifier
 
 ## regression estimation with RVMs
 perc.RVM.regress <- function (p,              # current perceptron
-                              tol=Machine ()$double.eps, # tolerance used to
+                              tol=sqrt(.Machine$double.eps), # tolerance used to
                                               # determine pruning
                               theta=1,        # start value of all theta's
                               var=0.1,        # variance of outputs
@@ -683,7 +685,7 @@ RVM.J <- function (alpha, y, out, Theta.inv) {
 
 ## classification with RVMs
 perc.RVM.class <- function (p,              # current perceptron
-                            tol=Machine ()$double.eps, # tolerance used to
+                            tol=sqrt(.Machine$double.eps), # tolerance used to
                                             # determine pruning
                             theta=1,        # start value of all
                                             # theta's
@@ -1458,14 +1460,13 @@ normalize.dataset <- function (X, verbosity=0) {
 ############################################################
 
 exmp.bayes <- function () {
-  load ("artifical4.dat");
+  load ("linear/artifical4.dat");
   p <- perc.new (cbind (data$x, data$y, 1), data$class, kernel.new ("linear"));
   p <- perc.svm (p);
   ## p <- perc.learn (p);
   pb <- perc.bayes (p, max.epoch = 1000, verb=2, plot=T, 
                     theta=60, phi=-30, radius=1.5);
   
-  x11 ();
   par (mfrow = c(1, 2));
   plot (p, margin=F, mark=F, nocol=32); title ("SVM");
   plot (pb, margin=F, mark=F, nocol=32); title ("BPM");
@@ -1474,71 +1475,66 @@ exmp.bayes <- function () {
 }
 
 exmp.bayes2 <- function () {
-  load ("artifical1.dat");
+  load ("linear/artifical1.dat");
   p <- perc.new (cbind (data$x, data$y), data$class, kernel.new ("rbf", sigma=1));
   p <- perc.svm (p);
   pb <- perc.bayes (p, disp.epoch=500, max.epoch = 1000, verb=2);
   
-  x11 ();
   plot (pb, margin=F, mark=F); title ("BPM");
   readline ("Press <Return> to finish.");
   dev.off ();
 }
 
-exmp.svm <- function (file="artifical1.dat", C=1e20,
+exmp.svm <- function (file="linear/artifical1.dat", C=1e20,
                       kernel=kernel.new ("rbf", sigma=1), norm=FALSE) {
   load (file);
   p <- perc.new (cbind (data$x, data$y), data$class, kernel);
   p <- perc.svm (p, C=C, norm=norm);
   
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p); title ("SVM");
   cat ("margin : ", formatC (perc.new.margin (p)), "\n")
   readline ("Press <Return> to finish.");
 }
 
-exmp.GP.class <- function (file="artifical1.dat", C=1,
+exmp.GP.class <- function (file="linear/artifical1.dat", C=1,
                            kernel=kernel.new ("rbf", sigma=1),
                            tol=1e-4, var=0.1) {
   load (file);
   p <- perc.new (cbind (data$x, data$y), data$class, kernel);
   p <- perc.GP.class (p, C=C, var=var, tol=tol);
   
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p); title ("GPC");
   readline ("Press <Return> to finish.");
   dev.off ();
 }
 
-exmp.GP.regress <- function (file="regression1.dat", var=0.1,
+exmp.GP.regress <- function (file="linear/regression1.dat", var=0.1,
                              kernel=kernel.new ("rbf", sigma=1)) {
   load (file);
   p <- perc.new (cbind (data$x), data$y, kernel);
   p <- perc.GP.regress (p, var=var);
   
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p, grid=1000); title ("GPR");
   readline ("Press <Return> to finish.");
   dev.off ();
 }
 
-exmp.RVM.regress <- function (file="regression1.dat", tol=Machine()$double.eps,
+exmp.RVM.regress <- function (file="linear/regression1.dat", tol=.Machine$double.eps,
                               kernel=kernel.new ("rbf", sigma=1), ...) {
   load (file);
   p <- perc.new (cbind (data$x), data$y, kernel);
   p <- perc.RVM.regress (p, tol=tol, verbosity=1, iterations=100, ...);
   
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p); title ("RVM");
   readline ("Press <Return> to finish.");
   dev.off ()
 }
 
-exmp.RVM.class <- function (file="artifical1.dat",
+exmp.RVM.class <- function (file="linear/artifical1.dat",
                             kernel=kernel.new ("rbf", sigma=1),
                             C=1,
                             tol=1e-4, verbosity=2, ...) {
@@ -1546,20 +1542,18 @@ exmp.RVM.class <- function (file="artifical1.dat",
   p <- perc.new (cbind (data$x, data$y), data$class, kernel);
   p <- perc.RVM.class (p, C=C, ...);
   
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p); title ("RVMC");
   readline ("Press <Return> to finish.");
   dev.off ();
 }
 
-exmp.fisher <- function (file="artifical1.dat", lambda=1e-3,
+exmp.fisher <- function (file="linear/artifical1.dat", lambda=1e-3,
                                kernel=kernel.new ("rbf", sigma=1), ...) {
   load (file);
   p <- perc.new (cbind (data$x, data$y), data$class, kernel);
   p <- perc.fisher (p, lambda=lambda, ...);
   
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p); title ("KFD");
   cat ("Classification error:", perc.class.error (p$data, p$class, p));
@@ -1569,11 +1563,10 @@ exmp.fisher <- function (file="artifical1.dat", lambda=1e-3,
 
 exmp.perc <- function (margin=0, method="standard",
                        kernel=kernel.new ("rbf", sigma=1)) {
-  load ("artifical5.dat");
+  load ("linear/artifical5.dat");
   p <- perc.new (cbind (data$x, data$y), data$class, kernel);
   p <- perc.learn (p, margin=margin, method=method, verbosity=1);
   
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p); title (paste ("Dual Perceptron (Margin=", formatC (margin), ")",
                           sep=""));
@@ -1582,11 +1575,10 @@ exmp.perc <- function (margin=0, method="standard",
 }
 
 exmp.nu.svm <- function () {
-  load ("artifical1.dat");
+  load ("linear/artifical1.dat");
   p <- perc.new (cbind (data$x, data$y), data$class, kernel.new ("rbf", sigma=1));
   p2 <- perc.nu.svm (p, nu=.2);
 
-  x11 ();
   par (mfrow = c(1, 1));
   plot (p2);
   title (expression (paste (nu, "-SVM")));

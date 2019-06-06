@@ -1,0 +1,4 @@
+This, however, does not imply that the learned function is close to
+the best one in terms of their parameters --- a (misleading)
+requirement sometimes made by classical parametric statistics (see
+also Section ).
