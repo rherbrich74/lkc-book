@@ -134,7 +134,7 @@ book <- function (output='SCREEN') {
   points (X, rep (0, length=length (X)), pch=4, lwd=4, cex=3);
       
   readline ("Press any key for next plot");
-  dev.off ();
+  ## dev.off ();
 
   ############################################################
   ## draw a cover
@@ -163,7 +163,7 @@ book <- function (output='SCREEN') {
   }
   
   readline ("Press any key for next plot");
-  dev.off ();
+  ## dev.off ();
 
 }
 
