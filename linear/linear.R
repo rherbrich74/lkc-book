@@ -1588,7 +1588,7 @@ exmp.nu.svm <- function () {
   for (i in c (.01, .02, .03, .04, .05, .06, .07, .08, .09)) {
     p2 <- perc.nu.svm (p, nu=i);
     plot(p2);
-    title (expression (paste (nu, "=", i)));
+    title (paste ("nu =", i));
   }
   readline ("Press <Return> to finish.");
   dev.off ();

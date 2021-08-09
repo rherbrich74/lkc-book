@@ -11,6 +11,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #define K(a,X,Y,r,n,j,k,t,d,c,s)          a = .0; switch (type) { case 1: for (i = 0; i < n; i++) a += (X [i*r + j] * Y [k*n + i]); break; case 2: for (i = 0; i < n; i++) a += (X [i*r + j] * Y [k*n + i]); a = pow (a + 1.0, d); break; case 3: for (i = 0; i < n; i++) a += (X [i*r + j] * Y [k*n + i]); a = pow (a + c, d); break; case 4: for (i = 0; i < n; i++) a += ((X [i*r + j] - Y [k*n + i]) * (X [i*r + j] - Y [k*n + i])); a = exp (-(a)/(2.0 * s * s)); break; default: a = 0.0; break; }
